@@ -27,7 +27,6 @@ contract LendingInstruction is Ownable {
     address public tokenAddr;
     address public aTokenAddr;
     address public user;
-    address public manager;
     uint256 public liquidityRateThreshold; // in Ray units, whatever those are
     uint256 public reward; // in units of the token
     uint256 public amount; // in units of the token
@@ -47,17 +46,12 @@ contract LendingInstruction is Ownable {
         tokenAddr = _tokenAddr;
         aTokenAddr = _aTokenAddr;
         user = _user;
-        manager = _manager;
         liquidityRateThreshold = _liqudityRateThreshold;
         reward = _reward;
         amount = _amount;
         lent = true; 
     }
 
-    modifier onlyManager() {
-        require(_msgSender() == manager);
-        _;
-    }
 
     /// Call by the creator after construction. Expects a balance equal to `amount`.
     function beginLending() external onlyOwner {
@@ -70,7 +64,7 @@ contract LendingInstruction is Ownable {
         lent = true;
     }
 
-    function depositToAave(address lendingPool, address relayer) external onlyManager {
+    function depositToAave(address lendingPool, address relayer) {
         require(live, "contract not live");
         ,,,,liquidityRate,,,,,,,, = lendingPool.getReserveData(instruction.tokenAddr);
 
@@ -82,7 +76,7 @@ contract LendingInstruction is Ownable {
         IERC20(tokenAddr).transfer(relayer, instruction.reward);
     }
 
-    function withdrawFromAave(address relayer) external onlyManager {
+    function withdrawFromAave(address relayer) {
         require(live, "contract not live");
         ,,,,liquidityRate,,,,,,,, = lendingPool.getReserveData(instruction.tokenAddr);
 

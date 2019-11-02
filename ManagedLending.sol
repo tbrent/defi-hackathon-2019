@@ -29,17 +29,5 @@ contract ManagedTokenLendingRegistry is Context {
         emit LendingInstructionAdded(lendingInstructionAddr);
     }
 
-    function deposit(uint256 lendingInstructionIndex) external {
-        LendingInstruction instruction = lendingInstructions[lendingInstructionIndex];
-
-        emit Deposit(address(instruction), depositAmount);
-    }
-
-    function withdraw(uint256 lendingInstructionIndex) external {
-        LendingInstruction instruction = lendingInstructions[lendingInstructionIndex];
-
-    }
-
-
 
 }

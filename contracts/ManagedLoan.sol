@@ -4,6 +4,7 @@ import "./Ownable.sol";
 import "./IERC20.sol";
 import "./SafeMath.sol";
 
+
 interface ILoanPool {
     function deposit(address, uint256, uint16) external;
     function getReserveData(address) external view returns (
@@ -20,6 +21,7 @@ interface ILoanPool {
 interface IAToken {
     function redeem(uint256) external;
 }
+
 
 contract ManagedLoan is Ownable {
     using SafeMath for uint256;
@@ -42,7 +44,7 @@ contract ManagedLoan is Ownable {
         address _aTokenAddr,
         address _beneficiary,
         uint256 _liqudityRateThreshold,
-        uint256 _reward,
+        uint256 _reward
     ) public {
         loanPool = ILoanPool(_loanPool);
         tokenAddr = _tokenAddr;
@@ -70,18 +72,18 @@ contract ManagedLoan is Ownable {
     }
 
     function _depositToAave(address relayer) internal {
-        ,,,,liquidityRate,,,,,,,, = loanPool.getReserveData(tokenAddr);
-        require(liquidityRate < loan.liquidityRateThreshold, "bad withdrawal");
+        (,,,,uint256 liquidityRate,,,,,,,,) = loanPool.getReserveData(tokenAddr);
+        require(liquidityRate < liquidityRateThreshold, "bad withdrawal");
 
         IERC20 token = IERC20(tokenAddr);
-        uint256 balance = token.balanceOf(address(this));
+        uint256 depositAmount = token.balanceOf(address(this));
 
         if (relayer == beneficiary) {
-            token.approve(loanPool, balance);
-            loanPool.deposit(tokenAddr, balance, 0);
+            token.approve(address(loanPool), depositAmount);
+            loanPool.deposit(tokenAddr, depositAmount, 0);
         } else {
-            uint256 depositAmount = balance - reward;
-            token.approve(loanPool, depositAmount);
+            depositAmount = depositAmount - reward;
+            token.approve(address(loanPool), depositAmount);
             loanPool.deposit(tokenAddr, depositAmount, 0);
             token.transfer(relayer, reward);
         }
@@ -91,11 +93,11 @@ contract ManagedLoan is Ownable {
 
     function _withdrawFromAave(address relayer) internal {
         if (relayer != beneficiary) {
-            ,,,,liquidityRate,,,,,,,, = loanPool.getReserveData(loan.tokenAddr);
-            require(liquidityRate < loan.liquidityRateThreshold, "bad withdrawal");
+            (,,,,uint256 liquidityRate,,,,,,,,) = loanPool.getReserveData(tokenAddr);
+            require(liquidityRate < liquidityRateThreshold, "bad withdrawal");
         }
 
-        aTokenBal,,,,,,,,,, = loanPool.getUserReserveData(
+        (uint256 aTokenBal,,,,,,,,,,) = loanPool.getUserReserveData(
             tokenAddr, 
             address(this)
         );

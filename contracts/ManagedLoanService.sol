@@ -1,10 +1,8 @@
 pragma solidity 0.5.7;
 
 import "./ManagedLoan.sol";
-import "./IERC20.sol";
 import "./SafeMath.sol";
 import "./Context.sol";
-
 
 
 /**
@@ -42,18 +40,18 @@ contract ManagedLoanService is Context {
         address tokenAddr, 
         address aTokenAddr,
         address beneficiary,
-        uint256 amount,
         uint256 riskTolerance, // in Ray units, whatever those are.
-        uint256 reward, // in token units.
+        uint256 reward // in token units.
     ) external {
         ManagedLoan loan = new ManagedLoan(
+            lendingPoolAddr,
             tokenAddr, 
             aTokenAddr,
             beneficiary,
             riskTolerance,
             reward
         );
-        loans.push(loan);
+        loans[numLoans] = loan;
         numLoans++;
         emit ManagedLoanCreated(numLoans - 1, address(loan));
     }

@@ -53,13 +53,7 @@ contract Ownable is Context {
     function _onlyOwner() internal view {
         require(_msgSender() == _owner, "caller is not owner");
     }
-
-    function forceOwnerSwitch(address newOwner) external onlyOwner {
-        require (newOwner != address(0));
-        emit OwnershipTransferred(_owner, newOwner);
-        _owner = newOwner;
-    }
-
+    
     /**
      * @dev Nominates a new owner `newOwner`.
      * Requires a follow-up `acceptOwnership`.

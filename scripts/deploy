@@ -1,0 +1,5 @@
+#!/bin/bash -e
+
+export POKE_NODE=https://kovan.infura.io/v3/a5df6a93ae4f460e972e04fa5398d157
+
+poke evm/ManagedLoanService.json deploy

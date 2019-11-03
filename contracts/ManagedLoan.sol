@@ -73,7 +73,7 @@ contract ManagedLoan is Ownable {
 
     function _depositToAave(address relayer) internal {
         (,,,,uint256 liquidityRate,,,,,,,,) = loanPool.getReserveData(tokenAddr);
-        require(liquidityRate < liquidityRateThreshold, "bad withdrawal");
+        require(liquidityRate > liquidityRateThreshold, "bad withdrawal");
 
         IERC20 token = IERC20(tokenAddr);
         uint256 depositAmount = token.balanceOf(address(this));

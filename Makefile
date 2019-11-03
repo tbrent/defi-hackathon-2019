@@ -25,6 +25,15 @@ flat: $(flat)
 clean:
 	rm -rf abi evm sol-coverage-evm analysis flat
 
+deploy: json
+	scripts/deploy
+
+create: json
+	scripts/create
+
+deposit: json
+	scripts/deposit
+
 sizes: json
 	scripts/sizes $(json)
 

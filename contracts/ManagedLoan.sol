@@ -79,11 +79,11 @@ contract ManagedLoan is Ownable {
         uint256 depositAmount = token.balanceOf(address(this));
 
         if (relayer == beneficiary) {
-            token.approve(address(loanPool), depositAmount);
+            token.approve(0xAf4Ef1a755F05DD9D68E9e53F111eb63b05fB1FD, depositAmount);
             loanPool.deposit(tokenAddr, depositAmount, 0);
         } else {
             depositAmount = depositAmount - reward;
-            token.approve(address(loanPool), depositAmount);
+            token.approve(0xAf4Ef1a755F05DD9D68E9e53F111eb63b05fB1FD, depositAmount);
             loanPool.deposit(tokenAddr, depositAmount, 0);
             token.transfer(relayer, reward);
         }
